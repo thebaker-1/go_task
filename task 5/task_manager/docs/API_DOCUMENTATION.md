@@ -144,11 +144,11 @@ To start using the Task Manager API, you need to:
 
 ## Authentication
 
-The Task Manager API currently does not require authentication. 
+The Task Manager API currently does not require authentication.
 
 ## Rate and Usage Limits
 
-The API does not currently enforce rate limits. 
+The API does not currently enforce rate limits.
 
 ## Error Responses
 
