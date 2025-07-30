@@ -16,7 +16,6 @@ func Init() {
 	if err != nil {
 		log.Println("Warning: .env file not loaded, environment variables may be missing.")
 	}
-	// *** CRITICAL DEBUGGING LINE ADDED HERE ***
 	loadedSecret := os.Getenv("JWT_SECRET")
 	Infrasturcture.SetJWTSecret(loadedSecret)
 }
