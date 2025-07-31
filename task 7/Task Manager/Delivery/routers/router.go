@@ -2,7 +2,7 @@ package routers
 
 import (
 	"taskmanager/Delivery/controllers"
-	"taskmanager/Infrasturcture"
+	"taskmanager/Infrastructure"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +16,7 @@ func SetupRouter(ctrl *controllers.Controller) *gin.Engine {
 
 	// Protected routes
 	auth := r.Group("/")
-	auth.Use(Infrasturcture.AuthenticateJWT())
+	auth.Use(Infrastructure.AuthenticateJWT())
 
 	auth.GET("/tasks", ctrl.GetTasks)
 	auth.GET("/tasks/:id", ctrl.GetTask)

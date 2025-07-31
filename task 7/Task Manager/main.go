@@ -7,7 +7,7 @@ import (
 
 	"taskmanager/Delivery/controllers"
 	"taskmanager/Delivery/routers"
-	"taskmanager/Infrasturcture"
+	Infrasturcture "taskmanager/Infrastructure"
 	"taskmanager/Repositories"
 	"taskmanager/Usecases"
 )

@@ -1,4 +1,4 @@
-package Infrasturcture
+package Infrastructure
 
 import (
 	"fmt"

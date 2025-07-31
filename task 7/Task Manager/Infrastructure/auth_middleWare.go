@@ -1,4 +1,4 @@
-package Infrasturcture
+package Infrastructure
 
 import (
 	"fmt"
@@ -13,7 +13,9 @@ import (
 // JWT secret key should be stored securely, e.g., environment variable
 // Use package-level jwtSecret from jwt_services.go
 
+
 func AuthenticateJWT() gin.HandlerFunc {
+
 	return func(c *gin.Context) {
 		authHeader := c.GetHeader("Authorization")
 		if authHeader == "" {

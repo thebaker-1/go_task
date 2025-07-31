@@ -4,34 +4,12 @@ import (
 	"context"
 	"net/http"
 	"time"
-
 	"taskmanager/Domain"
+	"taskmanager/Infrastructure"
 	"taskmanager/Usecases"
-
-	"log"
-	"os"
-
 	"github.com/gin-gonic/gin"
-	"github.com/golang-jwt/jwt/v5"
-	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
-
-// Define your JWT secret key. In a real app, this should be an environment variable.
-
-var jwtSecret []byte
-
-func init() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-	secret := os.Getenv("JWT_SECRET")
-	if secret == "" {
-		log.Fatal("JWT_SECRET not set in .env file")
-	}
-	jwtSecret = []byte(secret)
-}
 
 type Controller struct {
 	UserUsecase Usecases.UserUsecase
@@ -94,20 +72,8 @@ func toTaskDomain(dto TaskDTO) (Domain.Task, error) {
 	}, nil
 }
 
-// func toUserDTO(user Domain.User) UserDTO {
-// 	// This function is currently unused but kept for future use or consistency
-// 	return UserDTO{
-// 		ID:       user.ID.Hex(),
-// 		Username: user.Username,
-// 		Password: user.Password,
-// 		Email:    user.Email,
-// 		Role:     user.Role,
-// 	}
-// }
-
 func toUserDomain(dto UserDTO) Domain.User {
 	var id primitive.ObjectID
-	// Since UserDTO.ID is string, convert to ObjectID if not empty
 	if dto.ID != "" {
 		var err error
 		id, err = primitive.ObjectIDFromHex(dto.ID)
@@ -163,15 +129,8 @@ func (c *Controller) LoginUser(ctx *gin.Context) {
 		return
 	}
 
-	// Generate JWT token
-	claims := jwt.MapClaims{
-		"user_id":  user.ID,
-		"username": user.Username,
-		"role":     user.Role,
-		"exp":      time.Now().Add(time.Hour * 24).Unix(), // Token expires in 24 hours
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	signedToken, err := token.SignedString(jwtSecret)
+	// Generate JWT token using Infrastructure package
+	signedToken, err := Infrastructure.GenerateToken(user.ID.Hex(), user.Username, user.Role)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to generate token"})
 		return
@@ -184,7 +143,7 @@ func (c *Controller) LoginUser(ctx *gin.Context) {
 func (c *Controller) GetTasks(ctx *gin.Context) {
 	tasks, err := c.TaskUsecase.GetAllTasks(context.Background())
 	if err != nil {
-		ctx.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "1Failed to retrieve tasks", "error": err.Error()})
+		ctx.IndentedJSON(http.StatusInternalServerError, gin.H{"message": "Failed to retrieve tasks", "error": err.Error()})
 		return
 	}
 
